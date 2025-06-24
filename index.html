@@ -1,207 +1,372 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YOUR NAME</title>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            color: #33ff33;
-            font-family: "Courier New", Courier, monospace;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: black;
-        }
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-        }
-        .login-container {
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-            border: 2px solid #33ff33;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px #33ff33;
-            background: rgba(0, 0, 0, 0.8);
-            animation: fadeIn 2s ease-in-out;
-        }
-        .login-container h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            animation: glitch-animation 2s infinite;
-        }
-        .login-container input {
-            background-color: black;
-            color: #33ff33;
-            border: 1px solid #33ff33;
-            padding: 10px;
-            margin: 10px 0;
-            width: 100%;
-            font-size: 1rem;
-            border-radius: 5px;
-            transition: border-color 0.3s ease-in-out;
-        }
-        .login-container input:focus {
-            border-color: #00ff00;
-            animation: pulse 1s infinite;
-        }
-        .login-container input::placeholder {
-            color: #66ff66;
-        }
-        .login-container button {
-            background-color: #33ff33;
-            color: black;
-            border: none;
-            padding: 10px 15px;
-            font-size: 1rem;
-            font-family: "Courier New", Courier, monospace;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s;
-            animation: button-glow 2s infinite;
-        }
-        .login-container button:hover {
-            background-color: black;
-            color: #33ff33;
-            border: 1px solid #33ff33;
-            box-shadow: 0 0 10px #33ff33;
-        }
-        .login-container p {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: #66ff66;
-        }
-        /* Glitch animation for the heading */
-        @keyframes glitch-animation {
-            0% { text-shadow: 2px 2px 1px #00ff00, -2px -2px 1px #00ff00; }
-            50% { text-shadow: -2px -2px 1px #ff0000, 2px 2px 1px #ff0000; }
-            100% { text-shadow: 2px 2px 1px #00ff00, -2px -2px 1px #00ff00; }
-        }
-        /* Fade-in animation */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        /* Pulsing animation for input focus */
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 5px #00ff00; }
-            50% { box-shadow: 0 0 15px #00ff00; }
-        }
-        /* Glowing button animation */
-        @keyframes button-glow {
-            0%, 100% { box-shadow: 0 0 5px #33ff33; }
-            50% { box-shadow: 0 0 15px #33ff33; }
-        }
-    </style>
+    <title>Akindu MD - Phone Pairing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 </head>
-<body>
-    <canvas id="matrix"></canvas>
-    <div class="login-container">
-        <h1>ACCESS REQUIRED</h1>
-        <form id="loginForm">
-            <input type="text" id="username" placeholder="Enter Username" required="">
-            <input type="password" id="password" placeholder="Enter Password" required="">
-            <button type="submit">LOGIN</button>
-        </form>
-        <p>Unauthorized access is prohibited.</p>
+<body class="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden">
+        <!-- Header -->
+        <div class="bg-green-600 p-5 text-white">
+            <div class="flex items-center justify-center space-x-3">
+                <i class="fab fa-whatsapp text-3xl"></i>
+                <div>
+                    <h1 class="text-xl font-bold">AKINDU MD PAIRING</h1>
+                    <p class="text-xs opacity-80">Secure WhatsApp bot connection</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="p-6" id="app">
+            <!-- Step 1: Phone Entry -->
+            <div id="step-1">
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-800">Enter Your Number</h2>
+                    <p class="text-gray-600 text-sm mt-1">We'll send a verification code via SMS</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <div class="flex">
+                            <select id="country-code" class="bg-gray-100 border border-gray-300 rounded-l-lg px-3 w-20">
+                                <option value="+94">🇱🇰 +94</option>
+                                <option value="+91">🇮🇳 +91</option>
+                                <option value="+1">🇺🇸 +1</option>
+                            </select>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                class="flex-1 border border-gray-300 rounded-r-lg px-3 py-2 focus:ring-2 focus:ring-green-500" 
+                                placeholder="771234567"
+                                maxlength="15">
+                        </div>
+                    </div>
+
+                    <button 
+                        id="send-otp-btn"
+                        class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 px-4 rounded-lg transition flex items-center justify-center">
+                        <i class="fas fa-sms mr-2"></i> Send Verification Code
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: OTP Verification -->
+            <div id="step-2" class="hidden">
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-800">Verify Code</h2>
+                    <p class="text-gray-600 text-sm mt-1" id="otp-sent-to"></p>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">6-digit Code</label>
+                        <div class="flex space-x-2">
+                            <input 
+                                type="tel" 
+                                maxlength="1" 
+                                class="w-12 h-12 text-center text-xl border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 otp-input">
+                            <input 
+                                type="tel" 
+                                maxlength="1" 
+                                class="w-12 h-12 text-center text-xl border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 otp-input">
+                            <input 
+                                type="tel" 
+                                maxlength="1" 
+                                class="w-12 h-12 text-center text-xl border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 otp-input">
+                            <input 
+                                type="tel" 
+                                maxlength="1" 
+                                class="w-12 h-12 text-center text-xl border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 otp-input">
+                            <input 
+                                type="tel" 
+                                maxlength="1" 
+                                class="w-12 h-12 text-center text-xl border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 otp-input">
+                            <input 
+                                type="tel" 
+                                maxlength="1" 
+                                class="w-12 h-12 text-center text-xl border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 otp-input">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <button 
+                            id="back-btn"
+                            class="text-gray-600 hover:text-gray-800 text-sm flex items-center">
+                            <i class="fas fa-arrow-left mr-1"></i> Change Number
+                        </button>
+                        
+                        <div class="text-sm text-gray-600" id="countdown">
+                            Resend code in <span id="timer">59</span>s
+                        </div>
+                    </div>
+
+                    <button 
+                        id="verify-otp-btn"
+                        class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 px-4 rounded-lg transition">
+                        Verify & Connect
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Session Connected -->
+            <div id="step-3" class="hidden">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-check text-3xl text-green-600"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Connected!</h2>
+                    <p class="text-gray-600">Your WhatsApp is now paired with Akindu MD</p>
+                </div>
+
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                    <div class="text-center">
+                        <p class="text-xs text-gray-500 mb-1">SESSION ID</p>
+                        <p class="text-lg font-mono font-bold text-green-600" id="session-id"></p>
+                        <div class="flex items-center justify-center mt-3">
+                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                                Active for <span id="session-timer">14:59</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-800">
+                    <i class="fas fa-info-circle mr-1"></i> You can now use Akindu MD bot commands in WhatsApp
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="bg-gray-100 p-3 text-center text-xs text-gray-600">
+            <p>Akindu MD WhatsApp Bot • v2.5 • Secure Connection</p>
+        </div>
     </div>
 
-    <!-- Audio Files -->
-    <audio id="clickSound" src="media/Click.mp3"></audio>
-    <audio id="hackerVoice" src="media/Hacker.mp3"></audio>
-    <audio id="successVoice" src="media/Successful.mp3"></audio>
-    <audio id="errorVoice" src="media/Invalid.mp3"></audio>
+    <!-- Include Twilio (for actual SMS sending) -->
+    <script src="https://sdk.twilio.com/js/verification/v1/verification.min.js"></script>
 
     <script>
-        // Matrix background animation
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuration
+            const config = {
+                twilio: {
+                    serviceId: 'AC76c41eb1a46d066085b606d2f7896b4c', // Your Twilio Verify Service SID
+                    // In production, this would be set up in your backend
+                },
+                sessionDuration: 900 // 15 minutes in seconds
+            };
 
-        const chars = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm0123456789!@#$%^&*()_+{}=|:<>?+-*[]\;/-";
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
+            // State management
+            const state = {
+                phoneNumber: '',
+                verification: null,
+                otp: '',
+                sessionId: '',
+                countdownInterval: null
+            };
 
-        const drops = Array.from({ length: columns }).fill(1);
+            // DOM elements
+            const elements = {
+                step1: document.getElementById('step-1'),
+                step2: document.getElementById('step-2'),
+                step3: document.getElementById('step-3'),
+                phoneInput: document.getElementById('phone'),
+                countryCode: document.getElementById('country-code'),
+                otpSentTo: document.getElementById('otp-sent-to'),
+                otpInputs: document.querySelectorAll('.otp-input'),
+                sendOtpBtn: document.getElementById('send-otp-btn'),
+                backBtn: document.getElementById('back-btn'),
+                verifyOtpBtn: document.getElementById('verify-otp-btn'),
+                countdown: document.getElementById('countdown'),
+                timer: document.getElementById('timer'),
+                sessionIdEl: document.getElementById('session-id'),
+                sessionTimer: document.getElementById('session-timer')
+            };
 
-        function drawMatrix() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = "#33ff33";
-            ctx.font = `${fontSize}px Courier New`;
-
-            drops.forEach((y, x) => {
-                const text = chars.charAt(Math.floor(Math.random() * chars.length));
-                ctx.fillText(text, x * fontSize, y * fontSize);
-
-                if (y * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[x] = 0;
-                }
-                drops[x]++;
-            });
-        }
-
-        setInterval(drawMatrix, 50);
-
-        // Adjust canvas size on window resize
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-    const hackerVoice = document.getElementById('hackerVoice');
-    const clickSound = document.getElementById('clickSound');
-    const successVoice = document.getElementById('successVoice');
-    const errorVoice = document.getElementById('errorVoice');    
-
-      // Try to play the audio immediately
-     hackerVoice.play().then(() => {
-      console.log('Audio autoplayed successfully.');
-    }).catch(() => {
-      console.log('Autoplay failed, enabling user interaction to start playback.');
-      
-      // Add a click listener to start audio after user interaction
-      document.body.addEventListener('click', () => {
-        audio.play().then(() => {
-          console.log('Audio playback started.');
-        }).catch(error => {
-          console.error('Playback failed:', error);
-        });
-      }, { once: true }); // Ensure the event fires only once 
-});
-        
-        // Handle login form submission
-        document.getElementById('loginForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            clickSound.play();
-
-            if (username === 'Adam' && password === 'Adam') {
-                successVoice.play();
-                setTimeout(() => {
-                    //alert("Login Successful! Redirecting...");
-                    window.location.href = ""; // Replace with your destination URL
-                }, 3010);
-            } else {
-                errorVoice.play();
-                //alert("Invalid username or password! Try again.");
+            // Initialize Twilio Verification (demo setup)
+            // In production, you should call your own backend API which then calls Twilio
+            function initTwilio() {
+                // This would be initialized with your Twilio credentials
+                // For demo, we'll simulate success
+                console.log('Initializing Twilio verification service');
             }
+
+            // Send OTP
+            elements.sendOtpBtn.addEventListener('click', async function() {
+                const countryCode = elements.countryCode.value;
+                const phoneNumber = elements.phoneInput.value.trim();
+                
+                if (!phoneNumber || phoneNumber.length < 7) {
+                    alert('Please enter a valid phone number');
+                    return;
+                }
+
+                state.phoneNumber = countryCode + phoneNumber;
+                elements.sendOtpBtn.disabled = true;
+                elements.sendOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
+
+                // In production: Call your backend API to send OTP via Twilio
+                // This is a simulation - in real app, you would:
+                // 1. Call your backend endpoint
+                // 2. Backend initializes Twilio Verify
+                // 3. Twilio sends SMS to user
+                
+                try {
+                    // Simulate API call delay
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    // Show success
+                    showStep2();
+                    
+                    // Start countdown for resend
+                    startCountdown(60);
+                    
+                    console.log(`OTP would be sent to: ${state.phoneNumber}`);
+                } catch (error) {
+                    console.error('Error sending OTP:', error);
+                    alert('Failed to send OTP. Please try again.');
+                    elements.sendOtpBtn.disabled = false;
+                    elements.sendOtpBtn.innerHTML = '<i class="fas fa-sms mr-2"></i> Send Verification Code';
+                }
+            });
+
+            // Handle OTP input
+            elements.otpInputs.forEach((input, index) => {
+                input.addEventListener('input', function(e) {
+                    if (this.value.length === 1) {
+                        if (index < elements.otpInputs.length - 1) {
+                            elements.otpInputs[index + 1].focus();
+                        }
+                    }
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value.length === 0) {
+                        if (index > 0) {
+                            elements.otpInputs[index - 1].focus();
+                        }
+                    }
+                });
+            });
+
+            // Verify OTP
+            elements.verifyOtpBtn.addEventListener('click', async function() {
+                state.otp = Array.from(elements.otpInputs).map(input => input.value).join('');
+                
+                if (state.otp.length !== 6) {
+                    alert('Please enter the full 6-digit code');
+                    return;
+                }
+
+                elements.verifyOtpBtn.disabled = true;
+                elements.verifyOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Verifying...';
+
+                // In production: Verify OTP with your backend API
+                try {
+                    // Simulate API verification
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // Generate session ID
+                    state.sessionId = 'AKD-' + Math.floor(100000 + Math.random() * 900000);
+                    
+                    // Show success
+                    showStep3();
+                    
+                    console.log(`Verified OTP for ${state.phoneNumber}, session: ${state.sessionId}`);
+                } catch (error) {
+                    console.error('Error verifying OTP:', error);
+                    alert('Invalid verification code. Please try again.');
+                    elements.verifyOtpBtn.disabled = false;
+                    elements.verifyOtpBtn.innerHTML = 'Verify & Connect';
+                }
+            });
+
+            // Back button
+            elements.backBtn.addEventListener('click', function() {
+                showStep1();
+                elements.sendOtpBtn.disabled = false;
+                elements.sendOtpBtn.innerHTML = '<i class="fas fa-sms mr-2"></i> Send Verification Code';
+                clearInterval(state.countdownInterval);
+            });
+
+            // Helper functions
+            function showStep1() {
+                elements.step1.classList.remove('hidden');
+                elements.step2.classList.add('hidden');
+                elements.step3.classList.add('hidden');
+            }
+
+            function showStep2() {
+                elements.otpInputs.forEach(input => input.value = '');
+                elements.step1.classList.add('hidden');
+                elements.step2.classList.remove('hidden');
+                elements.step3.classList.add('hidden');
+                elements.otpSentTo.textContent = `Sent to ${state.phoneNumber}`;
+                elements.sendOtpBtn.disabled = false;
+                elements.sendOtpBtn.innerHTML = '<i class="fas fa-sms mr-2"></i> Send Verification Code';
+                elements.otpInputs[0].focus();
+            }
+
+            function showStep3() {
+                elements.step1.classList.add('hidden');
+                elements.step2.classList.add('hidden');
+                elements.step3.classList.remove('hidden');
+                elements.sessionIdEl.textContent = state.sessionId;
+                startSessionTimer();
+            }
+
+            function startCountdown(seconds) {
+                let timeLeft = seconds;
+                clearInterval(state.countdownInterval);
+                
+                elements.countdown.classList.remove('hidden');
+                elements.timer.textContent = timeLeft;
+                
+                state.countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    elements.timer.textContent = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(state.countdownInterval);
+                        elements.countdown.innerHTML = '<button id="resend-btn" class="text-green-600 hover:text-green-800">Resend code</button>';
+                        
+                        document.getElementById('resend-btn').addEventListener('click', function() {
+                            // Resend OTP
+                            alert('New OTP sent!');
+                            startCountdown(60);
+                        });
+                    }
+                }, 1000);
+            }
+
+            function startSessionTimer() {
+                let timeLeft = config.sessionDuration;
+                updateSessionTimer(timeLeft);
+                
+                const timer = setInterval(() => {
+                    timeLeft--;
+                    updateSessionTimer(timeLeft);
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                    }
+                }, 1000);
+            }
+
+            function updateSessionTimer(seconds) {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                elements.sessionTimer.textContent = `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+            }
+
+            // Initialize
+            initTwilio();
         });
     </script>
-
-
-</body></html>
-
-
-
-> > 𝙰𝙳𝙷𝙸 𝙾𝙵𝙲 || 𝙶𝙾𝙻𝙳𝙴𝙽𝚀𝚄𝙴𝙴𝙽ᵀᴹ
+</body>
+</html>
