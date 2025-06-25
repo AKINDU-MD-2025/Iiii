@@ -3,348 +3,364 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akindu MD - WhatsApp Pairing</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mega.js@1.0.0/dist/mega.min.js"></script>
+    <title>Akindu MD - WhatsApp Bot</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #25D366;
+            --secondary: #128C7E;
+            --dark: #075E54;
+            --light: #dcf8c6;
+        }
+        
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #f0fdf4, #dcfce7);
         }
-        .whatsapp-bg {
-            background: linear-gradient(to right, #25D366, #128C7E);
+        
+        .whatsapp-gradient {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
         }
-        .status-pulse {
-            animation: pulse 1.5s infinite;
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
+        
+        .qr-container {
+            transition: all 0.3s ease;
+        }
+        
+        .qr-container:hover {
+            transform: scale(1.03);
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .sri-lanka-time {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .session-card {
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(220, 248, 198, 0.2),
+                rgba(220, 248, 198, 0.2) 10px,
+                rgba(37, 211, 102, 0.1) 10px,
+                rgba(37, 211, 102, 0.1) 20px
+            );
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden">
-        <!-- Header -->
-        <div class="whatsapp-bg p-5 text-white text-center">
-            <div class="flex items-center justify-center space-x-3">
-                <i class="fab fa-whatsapp text-3xl"></i>
-                <h1 class="text-xl font-bold">AKINDU MD PAIRING</h1>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="whatsapp-gradient shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fab fa-whatsapp text-2xl text-white"></i>
+                <span class="text-xl font-bold text-white">Akindu MD</span>
             </div>
-            <div class="flex items-center justify-center mt-2">
-                <div class="w-3 h-3 rounded-full bg-white mr-2 status-pulse"></div>
-                <span class="text-xs">Connecting to WhatsApp API...</span>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#pair" class="text-white hover:text-gray-200">Pair Device</a>
+                <a href="#features" class="text-white hover:text-gray-200">Features</a>
+                <a href="#how-it-works" class="text-white hover:text-gray-200">Guide</a>
+                <a href="#faq" class="text-white hover:text-gray-200">FAQ</a>
             </div>
+            <button class="md:hidden text-white">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
         </div>
+    </nav>
 
-        <!-- Main Content -->
-        <div class="p-6">
-            <!-- Connection Status -->
-            <div id="connection-status" class="text-center mb-6">
-                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <i class="fas fa-plug text-3xl text-gray-400"></i>
-                </div>
-                <h2 class="text-xl font-bold text-gray-800">Connect WhatsApp Account</h2>
-                <p class="text-gray-600">Pair with Akindu MD bot</p>
+    <!-- Hero Section -->
+    <section class="py-16 px-4 text-center">
+        <div class="max-w-4xl mx-auto">
+            <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-white flex items-center justify-center shadow-lg pulse-animation">
+                <i class="fab fa-whatsapp text-4xl text-green-500"></i>
             </div>
-
-            <!-- QR Code Container -->
-            <div id="qr-container" class="flex flex-col items-center mb-6 hidden">
-                <canvas id="qrcode" class="border-2 border-dashed border-gray-200 mb-4"></canvas>
-                <p class="text-sm text-gray-600 mb-2">Scan with WhatsApp > Linked Devices</p>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Connect to Akindu MD</h1>
+            <p class="text-xl text-gray-600 mb-8">Premium WhatsApp Bot with Sri Lankan Optimizations</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#pair" class="whatsapp-gradient hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition shadow-lg flex items-center justify-center">
+                    <i class="fas fa-qrcode mr-2"></i> Pair Now
+                </a>
+                <a href="#features" class="bg-white hover:bg-gray-100 text-gray-800 font-bold py-3 px-6 rounded-lg border border-gray-300 transition shadow-lg flex items-center justify-center">
+                    <i class="fas fa-list-ul mr-2"></i> Features
+                </a>
             </div>
-
-            <!-- Session Info -->
-            <div id="session-info" class="hidden bg-gray-50 rounded-lg p-4 mb-6">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-medium text-gray-700">Session ID:</span>
-                    <button onclick="copySession()" class="text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded">
-                        Copy
-                    </button>
-                </div>
-                <div id="session-id" class="font-mono bg-white p-2 rounded text-green-600"></div>
-                <div class="text-xs text-gray-500 mt-2">Stored securely in MEGA cloud</div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="space-y-3">
-                <button id="start-pairing" onclick="startPairing()" 
-                    class="w-full whatsapp-bg hover:bg-green-600 text-white font-medium py-2.5 px-4 rounded-lg transition">
-                    <i class="fas fa-link mr-2"></i> Start Pairing
-                </button>
-                
-                <button id="disconnect-btn" onclick="disconnect()" 
-                    class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2.5 px-4 rounded-lg transition hidden">
-                    <i class="fas fa-unlink mr-2"></i> Disconnect
-                </button>
-            </div>
-
-            <!-- Debug Console -->
-            <div class="mt-6 bg-gray-100 rounded-lg p-3 max-h-40 overflow-y-auto hidden" id="debug-console">
-                <div class="text-xs font-mono text-gray-700 space-y-1" id="console-output"></div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="bg-gray-100 p-3 text-center text-xs text-gray-600">
-            Akindu MD WhatsApp Bot • v3.0 • Secure Cloud Pairing
-        </div>
-    </div>
-
-    <script>
-        // MEGA.nz Configuration
-        const megaConfig = {
-            email: 'dimanshaakindu@gmail.com',
-            password: 'Akindu21454',
-            storagePath: '/AkinduMD/Sessions/'
-        };
-
-        // WhatsApp API Configuration
-        const whatsappConfig = {
-            clientId: 'AKINDU_MD_BOT',
-            pairingExpiry: 300 // 5 minutes
-        };
-
-        // State management
-        const state = {
-            qrCode: null,
-            sessionId: null,
-            mega: null,
-            pairingInterval: null
-        };
-
-        // Initialize MEGA client
-        async function initMega() {
-            try {
-                logToConsole('Connecting to MEGA.nz cloud storage...');
-                state.mega = new Mega();
-                await state.mega.login(megaConfig.email, megaConfig.password);
-                logToConsole('Connected to MEGA.nz successfully');
-                return true;
-            } catch (error) {
-                logToConsole(`MEGA connection error: ${error.message}`, 'error');
-                return false;
-            }
-        }
-
-        // Start WhatsApp pairing process
-        async function startPairing() {
-            const startBtn = document.getElementById('start-pairing');
-            startBtn.disabled = true;
-            startBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Initializing...';
-
-            // Initialize MEGA connection
-            const megaConnected = await initMega();
-            if (!megaConnected) {
-                startBtn.disabled = false;
-                startBtn.innerHTML = '<i class="fas fa-link mr-2"></i> Start Pairing';
-                return;
-            }
-
-            // Generate unique session ID
-            state.sessionId = generateSessionId();
-            logToConsole(`Generated session ID: ${state.sessionId}`);
             
-            // In a real implementation, you would:
-            // 1. Call your backend API to initiate WhatsApp pairing
-            // 2. Receive QR code data or pairing token
-            // 3. Generate QR code for scanning
-            
-            // For demo, we'll simulate QR generation
-            simulateQRGeneration();
-            
-            // Store session info in MEGA
-            await storeSessionData();
-        }
-
-        // Generate random session ID
-        function generateSessionId() {
-            const timestamp = Date.now().toString(36);
-            const random = Math.random().toString(36).substr(2, 9);
-            return `AKD-${timestamp}-${random}`.toUpperCase();
-        }
-
-        // Simulate QR code generation (replace with actual API call)
-        function simulateQRGeneration() {
-            logToConsole('Generating WhatsApp pairing QR code...');
-            
-            // Show QR container
-            document.getElementById('qr-container').classList.remove('hidden');
-            document.getElementById('start-pairing').classList.add('hidden');
-            document.getElementById('disconnect-btn').classList.remove('hidden');
-            
-            // In a real implementation, you would:
-            // 1. Call WhatsApp API to get pairing token
-            // 2. Generate QR code from token
-            // 3. Display QR code for scanning
-            
-            // For demo, we'll create a dummy QR
-            const qrCanvas = document.getElementById('qrcode');
-            const ctx = qrCanvas.getContext('2d');
-            
-            // Set canvas size
-            qrCanvas.width = 200;
-            qrCanvas.height = 200;
-            
-            // Draw placeholder QR
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, qrCanvas.width, qrCanvas.height);
-            ctx.fillStyle = 'black';
-            ctx.font = '16px Arial';
-            ctx.fillText('DEMO QR CODE', 20, 100);
-            
-            logToConsole('QR code generated. Scan with WhatsApp.');
-            
-            // Simulate pairing completion after 5 seconds
-            state.pairingInterval = setTimeout(() => {
-                completePairing();
-            }, 5000);
-        }
-
-        // Store session data in MEGA
-        async function storeSessionData() {
-            try {
-                const sessionData = {
-                    sessionId: state.sessionId,
-                    createdAt: new Date().toISOString(),
-                    expiresAt: new Date(Date.now() + whatsappConfig.pairingExpiry * 1000).toISOString(),
-                    status: 'pending'
-                };
-                
-                const encryptedData = CryptoJS.AES.encrypt(
-                    JSON.stringify(sessionData),
-                    megaConfig.password
-                ).toString();
-                
-                const fileName = `${state.sessionId}.json`;
-                const filePath = megaConfig.storagePath + fileName;
-                
-                await state.mega.upload(filePath, new Blob([encryptedData]));
-                logToConsole(`Session data stored in MEGA: ${filePath}`);
-                
-                // Show session info
-                document.getElementById('session-id').textContent = state.sessionId;
-                document.getElementById('session-info').classList.remove('hidden');
-            } catch (error) {
-                logToConsole(`Error storing session: ${error.message}`, 'error');
-            }
-        }
-
-        // Complete pairing process
-        async function completePairing() {
-            logToConsole('Device paired successfully!');
-            
-            // Update session status in MEGA
-            try {
-                const fileName = `${state.sessionId}.json`;
-                const filePath = megaConfig.storagePath + fileName;
-                
-                // Download current data
-                const file = await state.mega.download(filePath);
-                const fileContent = await file.text();
-                const decryptedData = CryptoJS.AES.decrypt(
-                    fileContent,
-                    megaConfig.password
-                ).toString(CryptoJS.enc.Utf8);
-                
-                const sessionData = JSON.parse(decryptedData);
-                sessionData.status = 'active';
-                sessionData.pairedAt = new Date().toISOString();
-                
-                // Re-upload updated data
-                const updatedData = CryptoJS.AES.encrypt(
-                    JSON.stringify(sessionData),
-                    megaConfig.password
-                ).toString();
-                
-                await state.mega.upload(filePath, new Blob([updatedData]), { overwrite: true });
-                logToConsole('Session status updated to active');
-                
-                // Update UI
-                document.getElementById('connection-status').innerHTML = `
-                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <i class="fas fa-check text-3xl text-green-600"></i>
+            <!-- Sri Lanka Time Display -->
+            <div class="mt-10 bg-white bg-opacity-90 rounded-lg p-4 max-w-xs mx-auto shadow">
+                <div class="flex items-center justify-center space-x-4">
+                    <img src="https://flagcdn.com/w20/lk.png" alt="Sri Lanka Flag" class="w-6 h-4">
+                    <div class="text-center">
+                        <div class="sri-lanka-time text-xl font-bold text-gray-800" id="sri-lanka-time"></div>
+                        <div class="text-sm text-gray-600" id="sri-lanka-date"></div>
                     </div>
-                    <h2 class="text-xl font-bold text-gray-800">Pairing Successful!</h2>
-                    <p class="text-gray-600">Connected to Akindu MD</p>
-                `;
-                
-                document.getElementById('qr-container').classList.add('hidden');
-            } catch (error) {
-                logToConsole(`Error updating session: ${error.message}`, 'error');
-            }
-        }
-
-        // Disconnect session
-        async function disconnect() {
-            clearTimeout(state.pairingInterval);
-            
-            if (state.sessionId) {
-                try {
-                    const fileName = `${state.sessionId}.json`;
-                    const filePath = megaConfig.storagePath + fileName;
-                    await state.mega.delete(filePath);
-                    logToConsole('Session removed from MEGA');
-                } catch (error) {
-                    logToConsole(`Error removing session: ${error.message}`, 'error');
-                }
-            }
-            
-            // Reset UI
-            document.getElementById('qr-container').classList.add('hidden');
-            document.getElementById('session-info').classList.add('hidden');
-            document.getElementById('disconnect-btn').classList.add('hidden');
-            document.getElementById('start-pairing').classList.remove('hidden');
-            document.getElementById('start-pairing').disabled = false;
-            document.getElementById('start-pairing').innerHTML = '<i class="fas fa-link mr-2"></i> Start Pairing';
-            
-            document.getElementById('connection-status').innerHTML = `
-                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <i class="fas fa-plug text-3xl text-gray-400"></i>
                 </div>
-                <h2 class="text-xl font-bold text-gray-800">Connect WhatsApp Account</h2>
-                <p class="text-gray-600">Pair with Akindu MD bot</p>
-            `;
-            
-            logToConsole('Session disconnected');
-        }
+            </div>
+        </div>
+    </section>
 
-        // Copy session ID to clipboard
-        function copySession() {
-            navigator.clipboard.writeText(state.sessionId).then(() => {
-                const button = event.target;
-                button.textContent = 'Copied!';
+    <!-- Pairing Section -->
+    <section id="pair" class="py-16 px-4 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-2">Pair Your Device</h2>
+            <p class="text-center text-gray-600 mb-12">Connect your WhatsApp with Akindu MD</p>
+            
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <!-- QR Pairing Card -->
+                <div class="bg-gray-50 rounded-xl shadow-md overflow-hidden">
+                    <div class="whatsapp-gradient p-4 text-white">
+                        <h3 class="font-bold flex items-center">
+                            <i class="fas fa-qrcode mr-2"></i> QR Code Pairing
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div id="qr-container" class="flex flex-col items-center">
+                            <div class="w-64 h-64 bg-white rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center mb-4 qr-container">
+                                <canvas id="qrcode" class="w-full h-full p-4"></canvas>
+                            </div>
+                            
+                            <div class="text-center mb-4">
+                                <p class="text-sm text-gray-600">Scan this QR code with WhatsApp</p>
+                                <p class="text-xs text-gray-500 mt-1">(WhatsApp → Linked Devices → Link a Device)</p>
+                            </div>
+                            
+                            <button id="start-pairing" class="whatsapp-gradient hover:bg-green-600 text-white font-medium py-2 px-6 rounded-lg transition flex items-center">
+                                <i class="fas fa-sync-alt mr-2"></i> Generate New Code
+                            </button>
+                        </div>
+                        
+                        <div id="session-info" class="hidden mt-6 session-card rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm font-medium text-gray-700">Session ID:</span>
+                                <button id="copy-session" class="text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded flex items-center">
+                                    <i class="fas fa-copy mr-1"></i> Copy
+                                </button>
+                            </div>
+                            <div id="session-id" class="font-mono bg-white p-2 rounded text-green-600 mb-2 tracking-wider"></div>
+                            <div class="flex justify-between items-center text-xs text-gray-500">
+                                <span>Status: <span id="session-status" class="font-medium text-green-600">Active</span></span>
+                                <span>Expires in: <span id="session-timer">14:59</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Manual Pairing Instructions -->
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Pairing Instructions</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start p-4 bg-gray-50 rounded-lg">
+                            <div class="bg-green-100 text-green-600 rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">1</div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Open WhatsApp</h4>
+                                <p class="text-sm text-gray-600">On your mobile phone, open WhatsApp</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start p-4 bg-gray-50 rounded-lg">
+                            <div class="bg-green-100 text-green-600 rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">2</div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Go to Linked Devices</h4>
+                                <p class="text-sm text-gray-600">Tap Menu → Linked Devices → Link a Device</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start p-4 bg-gray-50 rounded-lg">
+                            <div class="bg-green-100 text-green-600 rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">3</div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Scan QR Code</h4>
+                                <p class="text-sm text-gray-600">Point your phone camera at the QR code</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start p-4 border-l-4 border-blue-400 bg-blue-50 rounded-lg">
+                            <div class="text-blue-500 mr-3">
+                                <i class="fas fa-info-circle mt-1"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Note</h4>
+                                <p class="text-sm text-gray-600">Keep your phone connected to the internet during pairing</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 px-4 bg-gray-50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-2">Features</h2>
+            <p class="text-center text-gray-600 mb-12">What makes Akindu MD special</p>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+                    <div class="whatsapp-gradient p-4 text-white">
+                        <i class="fas fa-bolt text-2xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl text-gray-800 mb-2">Lightning Fast</h3>
+                        <p class="text-gray-600">Optimized servers in Sri Lanka for minimal latency</p>
+                    </div>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+                    <div class="whatsapp-gradient p-4 text-white">
+                        <i class="fas fa-calendar-day text-2xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl text-gray-800 mb-2">Sri Lankan Calendar</h3>
+                        <p class="text-gray-600">Auto-detects holidays and cultural events</p>
+                    </div>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+                    <div class="whatsapp-gradient p-4 text-white">
+                        <i class="fas fa-shield-alt text-2xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl text-gray-800 mb-2">Secure</h3>
+                        <p class="text-gray-600">End-to-end encrypted sessions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12 px-4">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-4 gap-8">
+            <div>
+                <h3 class="font-bold text-lg mb-4">Akindu MD</h3>
+                <p class="text-gray-400">Advanced WhatsApp automation with Sri Lankan optimizations</p>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg mb-4">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="#pair" class="text-gray-400 hover:text-white">Pair Device</a></li>
+                    <li><a href="#features" class="text-gray-400 hover:text-white">Features</a></li>
+                    <li><a href="#how-it-works" class="text-gray-400 hover:text-white">How It Works</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg mb-4">Support</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-white">Help Center</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white">Contact Us</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg mb-4">Connect</h3>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-whatsapp text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-telegram text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-github text-xl"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-6xl mx-auto mt-8 pt-4 border-t border-gray-700 text-center text-gray-400 text-sm">
+            <p>© 2023 Akindu MD WhatsApp Bot. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <script>
+        // Sri Lanka Time Display
+        function updateSriLankaTime() {
+            const options = { 
+                timeZone: 'Asia/Colombo',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true 
+            };
+            
+            const dateOptions = { 
+                timeZone: 'Asia/Colombo',
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric' 
+            };
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', options);
+            const dateString = now.toLocaleDateString('en-US', dateOptions);
+            
+            document.getElementById('sri-lanka-time').textContent = timeString;
+            document.getElementById('sri-lanka-date').textContent = dateString;
+        }
+        
+        setInterval(updateSriLankaTime, 1000);
+        updateSriLankaTime();
+        
+        // QR Code Generation
+        document.getElementById('start-pairing').addEventListener('click', function() {
+            const sessionId = generateSessionId();
+            
+            // Display session ID
+            document.getElementById('session-id').textContent = sessionId;
+            document.getElementById('session-info').classList.remove('hidden');
+            
+            // Generate QR code
+            QRCode.toCanvas(document.getElementById('qrcode'), 
+                `AKINDU-MD-PAIR:${sessionId}`,
+                { width: 200 },
+                function(error) {
+                    if (error) console.error(error);
+                }
+            );
+            
+            // Start countdown timer
+            startSessionTimer();
+        });
+        
+        // Copy Session ID
+        document.getElementById('copy-session').addEventListener('click', function() {
+            const sessionId = document.getElementById('session-id').textContent;
+            navigator.clipboard.writeText(sessionId).then(() => {
+                const button = document.getElementById('copy-session');
+                button.innerHTML = '<i class="fas fa-check mr-1"></i> Copied';
                 setTimeout(() => {
-                    button.textContent = 'Copy';
+                    button.innerHTML = '<i class="fas fa-copy mr-1"></i> Copy';
                 }, 2000);
             });
+        });
+        
+        // Helper Functions
+        function generateSessionId() {
+            return 'AKD-' + Math.random().toString(36).substr(2, 8).toUpperCase();
         }
-
-        // Log messages to debug console
-        function logToConsole(message, type = 'info') {
-            const consoleEl = document.getElementById('console-output');
-            const timestamp = new Date().toLocaleTimeString();
+        
+        function startSessionTimer() {
+            let timeLeft = 900; // 15 minutes in seconds
+            updateTimerDisplay(timeLeft);
             
-            let color = 'text-gray-700';
-            if (type === 'error') color = 'text-red-600';
-            if (type === 'success') color = 'text-green-600';
-            
-            consoleEl.innerHTML += `<div class="${color}">[${timestamp}] ${message}</div>`;
-            consoleEl.parentElement.scrollTop = consoleEl.parentElement.scrollHeight;
-            
-            // Show console if hidden
-            if (consoleEl.parentElement.classList.contains('hidden')) {
-                consoleEl.parentElement.classList.remove('hidden');
-            }
-        }
-
-        // Initialize
-        document.getElementById('debug-console').classList.remove('hidden');
-        logToConsole('Akindu MD Pairing System initialized', 'success');
-    </script>
-</body>
-</html>
+            const timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay(timeLeft);
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('session-status').textContent = 'Expired';
