@@ -1,1 +1,367 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akindu MD - WhatsApp Bot</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #25D366;
+            --secondary: #128C7E;
+            --dark: #075E54;
+            --light: #dcf8c6;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+        }
+        
+        .whatsapp-gradient {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .qr-container {
+            transition: all 0.3s ease;
+        }
+        
+        .qr-container:hover {
+            transform: scale(1.03);
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .sri-lanka-time {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .session-card {
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(220, 248, 198, 0.2),
+                rgba(220, 248, 198, 0.2) 10px,
+                rgba(37, 211, 102, 0.1) 10px,
+                rgba(37, 211, 102, 0.1) 20px
+            );
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="whatsapp-gradient shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fab fa-whatsapp text-2xl text-white"></i>
+                <span class="text-xl font-bold text-white">Akindu MD</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#pair" class="text-white hover:text-gray-200">Pair Device</a>
+                <a href="#features" class="text-white hover:text-gray-200">Features</a>
+                <a href="#how-it-works" class="text-white hover:text-gray-200">Guide</a>
+                <a href="#faq" class="text-white hover:text-gray-200">FAQ</a>
+            </div>
+            <button class="md:hidden text-white">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="py-16 px-4 text-center">
+        <div class="max-w-4xl mx-auto">
+            <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-white flex items-center justify-center shadow-lg pulse-animation">
+                <i class="fab fa-whatsapp text-4xl text-green-500"></i>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Connect to Akindu MD</h1>
+            <p class="text-xl text-gray-600 mb-8">Premium WhatsApp Bot with Sri Lankan Optimizations</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#pair" class="whatsapp-gradient hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition shadow-lg flex items-center justify-center">
+                    <i class="fas fa-qrcode mr-2"></i> Pair Now
+                </a>
+                <a href="#features" class="bg-white hover:bg-gray-100 text-gray-800 font-bold py-3 px-6 rounded-lg border border-gray-300 transition shadow-lg flex items-center justify-center">
+                    <i class="fas fa-list-ul mr-2"></i> Features
+                </a>
+            </div>
+            
+            <!-- Sri Lanka Time Display -->
+            <div class="mt-10 bg-white bg-opacity-90 rounded-lg p-4 max-w-xs mx-auto shadow">
+                <div class="flex items-center justify-center space-x-4">
+                    <img src="https://flagcdn.com/w20/lk.png" alt="Sri Lanka Flag" class="w-6 h-4">
+                    <div class="text-center">
+                        <div class="sri-lanka-time text-xl font-bold text-gray-800" id="sri-lanka-time"></div>
+                        <div class="text-sm text-gray-600" id="sri-lanka-date"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pairing Section -->
+    <section id="pair" class="py-16 px-4 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-2">Pair Your Device</h2>
+            <p class="text-center text-gray-600 mb-12">Connect your WhatsApp with Akindu MD</p>
+            
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <!-- QR Pairing Card -->
+                <div class="bg-gray-50 rounded-xl shadow-md overflow-hidden">
+                    <div class="whatsapp-gradient p-4 text-white">
+                        <h3 class="font-bold flex items-center">
+                            <i class="fas fa-qrcode mr-2"></i> QR Code Pairing
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div id="qr-container" class="flex flex-col items-center">
+                            <div class="w-64 h-64 bg-white rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center mb-4 qr-container">
+                                <canvas id="qrcode" class="w-full h-full p-4"></canvas>
+                            </div>
+                            
+                            <div class="text-center mb-4">
+                                <p class="text-sm text-gray-600">Scan this QR code with WhatsApp</p>
+                                <p class="text-xs text-gray-500 mt-1">(WhatsApp → Linked Devices → Link a Device)</p>
+                            </div>
+                            
+                            <button id="start-pairing" class="whatsapp-gradient hover:bg-green-600 text-white font-medium py-2 px-6 rounded-lg transition flex items-center">
+                                <i class="fas fa-sync-alt mr-2"></i> Generate New Code
+                            </button>
+                        </div>
+                        
+                        <div id="session-info" class="hidden mt-6 session-card rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm font-medium text-gray-700">Session ID:</span>
+                                <button id="copy-session" class="text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded flex items-center">
+                                    <i class="fas fa-copy mr-1"></i> Copy
+                                </button>
+                            </div>
+                            <div id="session-id" class="font-mono bg-white p-2 rounded text-green-600 mb-2 tracking-wider"></div>
+                            <div class="flex justify-between items-center text-xs text-gray-500">
+                                <span>Status: <span id="session-status" class="font-medium text-green-600">Active</span></span>
+                                <span>Expires in: <span id="session-timer">14:59</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Manual Pairing Instructions -->
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Pairing Instructions</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start p-4 bg-gray-50 rounded-lg">
+                            <div class="bg-green-100 text-green-600 rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">1</div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Open WhatsApp</h4>
+                                <p class="text-sm text-gray-600">On your mobile phone, open WhatsApp</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start p-4 bg-gray-50 rounded-lg">
+                            <div class="bg-green-100 text-green-600 rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">2</div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Go to Linked Devices</h4>
+                                <p class="text-sm text-gray-600">Tap Menu → Linked Devices → Link a Device</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start p-4 bg-gray-50 rounded-lg">
+                            <div class="bg-green-100 text-green-600 rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">3</div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Scan QR Code</h4>
+                                <p class="text-sm text-gray-600">Point your phone camera at the QR code</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start p-4 border-l-4 border-blue-400 bg-blue-50 rounded-lg">
+                            <div class="text-blue-500 mr-3">
+                                <i class="fas fa-info-circle mt-1"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Note</h4>
+                                <p class="text-sm text-gray-600">Keep your phone connected to the internet during pairing</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 px-4 bg-gray-50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-2">Features</h2>
+            <p class="text-center text-gray-600 mb-12">What makes Akindu MD special</p>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+                    <div class="whatsapp-gradient p-4 text-white">
+                        <i class="fas fa-bolt text-2xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl text-gray-800 mb-2">Lightning Fast</h3>
+                        <p class="text-gray-600">Optimized servers in Sri Lanka for minimal latency</p>
+                    </div>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+                    <div class="whatsapp-gradient p-4 text-white">
+                        <i class="fas fa-calendar-day text-2xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl text-gray-800 mb-2">Sri Lankan Calendar</h3>
+                        <p class="text-gray-600">Auto-detects holidays and cultural events</p>
+                    </div>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+                    <div class="whatsapp-gradient p-4 text-white">
+                        <i class="fas fa-shield-alt text-2xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl text-gray-800 mb-2">Secure</h3>
+                        <p class="text-gray-600">End-to-end encrypted sessions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12 px-4">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-4 gap-8">
+            <div>
+                <h3 class="font-bold text-lg mb-4">Akindu MD</h3>
+                <p class="text-gray-400">Advanced WhatsApp automation with Sri Lankan optimizations</p>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg mb-4">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="#pair" class="text-gray-400 hover:text-white">Pair Device</a></li>
+                    <li><a href="#features" class="text-gray-400 hover:text-white">Features</a></li>
+                    <li><a href="#how-it-works" class="text-gray-400 hover:text-white">How It Works</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg mb-4">Support</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-white">Help Center</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white">Contact Us</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg mb-4">Connect</h3>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-whatsapp text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-telegram text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-github text-xl"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-6xl mx-auto mt-8 pt-4 border-t border-gray-700 text-center text-gray-400 text-sm">
+            <p>© 2023 Akindu MD WhatsApp Bot. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <script>
+        // Sri Lanka Time Display
+        function updateSriLankaTime() {
+            const options = { 
+                timeZone: 'Asia/Colombo',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true 
+            };
+            
+            const dateOptions = { 
+                timeZone: 'Asia/Colombo',
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric' 
+            };
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', options);
+            const dateString = now.toLocaleDateString('en-US', dateOptions);
+            
+            document.getElementById('sri-lanka-time').textContent = timeString;
+            document.getElementById('sri-lanka-date').textContent = dateString;
+        }
+        
+        setInterval(updateSriLankaTime, 1000);
+        updateSriLankaTime();
+        
+        // QR Code Generation
+        document.getElementById('start-pairing').addEventListener('click', function() {
+            const sessionId = generateSessionId();
+            
+            // Display session ID
+            document.getElementById('session-id').textContent = sessionId;
+            document.getElementById('session-info').classList.remove('hidden');
+            
+            // Generate QR code
+            QRCode.toCanvas(document.getElementById('qrcode'), 
+                `AKINDU-MD-PAIR:${sessionId}`,
+                { width: 200 },
+                function(error) {
+                    if (error) console.error(error);
+                }
+            );
+            
+            // Start countdown timer
+            startSessionTimer();
+        });
+        
+        // Copy Session ID
+        document.getElementById('copy-session').addEventListener('click', function() {
+            const sessionId = document.getElementById('session-id').textContent;
+            navigator.clipboard.writeText(sessionId).then(() => {
+                const button = document.getElementById('copy-session');
+                button.innerHTML = '<i class="fas fa-check mr-1"></i> Copied';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="fas fa-copy mr-1"></i> Copy';
+                }, 2000);
+            });
+        });
+        
+        // Helper Functions
+        function generateSessionId() {
+            return 'AKD-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+        }
+        
+        function startSessionTimer() {
+            let timeLeft = 900; // 15 minutes in seconds
+            updateTimerDisplay(timeLeft);
+            
+            const timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay(timeLeft);
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('session-status').textContent = 'Expired';
